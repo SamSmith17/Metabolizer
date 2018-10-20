@@ -34,18 +34,18 @@ public class Exploder : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //if (Input.mouseScrollDelta.y!=0){
-        //    explodeAmount += Input.mouseScrollDelta.y * Time.deltaTime;
+        if (Input.mouseScrollDelta.y!=0){
+            explodeAmount += Input.mouseScrollDelta.y * Time.deltaTime;
 
-        //    foreach (Explodee explodee in explodees)
-        //    {
-        //        if (!explodee.selected)
-        //            Reposition(explodee,explodee.transform);
-        //        //else if (!explodee.selected && explodeAll)
-        //            //Reposition(explodee,explodee.items[0].transform);
-        //    }
+            foreach (Explodee explodee in explodees)
+            {
+                if (!explodee.selected)
+                    Reposition(explodee,explodee.transform);
+                //else if (!explodee.selected && explodeAll)
+                    //Reposition(explodee,explodee.items[0].transform);
+            }
 
-        //}
+        }
 
 	}
 
