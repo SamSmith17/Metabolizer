@@ -7,9 +7,14 @@ public class Selecter : MonoBehaviour
 
     Explodee selectedExplodee;
     public float holdDistance;
+    bool follow = false;
 
     public delegate void DeselectAction(Explodee explodee, Transform explodeeTransform);
     public static event DeselectAction OnDeselect;
+
+    public delegate void SelectAction();
+    public static event SelectAction OnSelect;
+
 
     // Use this for initialization
     void Start()
@@ -47,7 +52,12 @@ public class Selecter : MonoBehaviour
             }
         }
 
-        if (selectedExplodee != null)
+        if (Input.GetKeyDown(KeyCode.E)){
+            follow = false;
+            selectedExplodee.RecolorOriginal();
+        }
+
+        if (selectedExplodee != null && follow)
         {
             //Debug.Log(selectedExplodee.name + " moving. offset: " + selectedExplodee.meshOffset + ", should be " + (Camera.main.transform.position + holdDistance * ray.direction - selectedExplodee.meshOffset) + ", actual " + selectedExplodee.transform.position);
             selectedExplodee.transform.position =Camera.main.transform.position + holdDistance* ray.direction - selectedExplodee.meshOffset;
@@ -66,6 +76,8 @@ public class Selecter : MonoBehaviour
     }
 
     void Select(Explodee clickedExplodee){
+        OnSelect();
+        follow = true;
         clickedExplodee.Select();
         selectedExplodee = clickedExplodee;
     }

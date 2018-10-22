@@ -7,24 +7,13 @@ public class Exploder : MonoBehaviour {
     public GameObject explodePoint;
     public float explodeAmount;
     Explodee[] explodees;
+    bool shouldExplode = true;
     //public bool explodeAll;
 
 	// Use this for initialization
 	void Start () {
         Selecter.OnDeselect += Reposition;
-        //if (explodeAll){
-        //    List<Explodee> createdExplodees = new List<Explodee>();
-        //    foreach(MeshRenderer _renderer in GetComponentsInChildren<MeshRenderer>()){
-        //        Explodee newExplodee = new Explodee();
-        //        newExplodee.items = new MeshRenderer[]{_renderer};
-        //        Vector3 positionSums = Vector3.zero;
-        //        Vector3 inverseVector = new Vector3(1 / transform.localScale.x, 1 / transform.localScale.y, 1 / transform.localScale.z);
-        //        newExplodee.meshOffset = _renderer.bounds.center - Vector3.Scale(transform.position, inverseVector);
-        //        newExplodee.startPosition = transform.position + newExplodee.meshOffset;
-        //        createdExplodees.Add(newExplodee);
-        //    }
-        //    explodees = createdExplodees.ToArray();
-        //}
+        Selecter.OnSelect += DisableExplode;
         explodees = GetComponentsInChildren<Explodee>();
         foreach (Explodee explodee in explodees){
             explodee.explodeDirection = explodee.startPosition - explodePoint.transform.position;
@@ -34,9 +23,9 @@ public class Exploder : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.mouseScrollDelta.y!=0){
+        if (Input.mouseScrollDelta.y!=0 && shouldExplode){
             explodeAmount += Input.mouseScrollDelta.y * Time.deltaTime;
-
+            explodeAmount = Mathf.Max(explodeAmount, 0f);
             foreach (Explodee explodee in explodees)
             {
                 if (!explodee.selected)
@@ -50,6 +39,11 @@ public class Exploder : MonoBehaviour {
 	}
 
     void Reposition(Explodee explodee,Transform explodeeTransform){
+        shouldExplode = true;
         explodeeTransform.position = explodee.startPosition - explodee.meshOffset + explodee.explodeDirection * explodeAmount * explodee.distance;
+    }
+
+    void DisableExplode(){
+        shouldExplode = false;
     }
 }

@@ -8,7 +8,7 @@ public class SubSplodee{
     public Vector3 startPosition;
     public Vector3 explodeDirection;
     public float distance;
-
+    public Color originalColor;
 }
 
 public class Explodee : MonoBehaviour
@@ -35,6 +35,7 @@ public class Explodee : MonoBehaviour
             newSplodee = new SubSplodee();
             newSplodee.mesh = mesh;
             newSplodee.meshOffset = mesh.bounds.center;
+            newSplodee.originalColor = mesh.material.color;
 
             positionSums += newSplodee.meshOffset;
             items.Add(newSplodee);
@@ -62,6 +63,7 @@ public class Explodee : MonoBehaviour
         if (selected && Input.mouseScrollDelta.y != 0)
         {
             explodeAmount += Input.mouseScrollDelta.y * Time.deltaTime;
+            explodeAmount = Mathf.Max(explodeAmount, 0f);
             Explode(explodeAmount);
 
         }
@@ -71,11 +73,7 @@ public class Explodee : MonoBehaviour
     public void OnMouseEnter()
     {
         if (!selected){
-            foreach (SubSplodee splodee in items)
-            {
-                MeshRenderer _renderer = splodee.mesh;
-                _renderer.material.color = Color.red;
-            }
+            Recolor(Color.red);
         }
 
     }
@@ -83,14 +81,25 @@ public class Explodee : MonoBehaviour
     public void OnMouseExit()
     {
         if (!selected){
-            foreach (SubSplodee splodee in items)
-            {
-                MeshRenderer _renderer = splodee.mesh;
-                _renderer.material.color = Color.grey;
-            }
-
+            RecolorOriginal();
         }
 
+    }
+
+    public void RecolorOriginal(){
+        foreach (SubSplodee splodee in items)
+        {
+            MeshRenderer _renderer = splodee.mesh;
+            _renderer.material.color = splodee.originalColor;
+        }
+    }
+
+    void Recolor(Color recolorColor){
+        foreach (SubSplodee splodee in items)
+        {
+            MeshRenderer _renderer = splodee.mesh;
+            _renderer.material.color = recolorColor;
+        }
     }
 
 
